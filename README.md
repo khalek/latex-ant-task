@@ -1,4 +1,8 @@
-latex-ant-task
+Simple LaTeX ANT Task
 ==============
 
-Ant task implementation for compiling LaTeX documents.
+Features:
+
+ * Compile with pdfTeX as an ANT Task
+ * Configure the compilation via attributes in an ANT target
+ * Support for BibTeX
