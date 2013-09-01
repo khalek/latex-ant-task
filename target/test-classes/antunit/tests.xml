@@ -1,0 +1,8 @@
+<project name="latex-antunit" 
+		 xmlns:au="antlib:org.apache.ant.antunit">
+	
+	<taskdef uri="antlib:org.apache.ant.antunit"
+			 resource="org/apache/ant/antunit/antlib.xml"
+ 			 classpath="${test.classpath}" />
+
+</project>			 

@@ -38,12 +38,42 @@
  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <build>
+	<plugins>
+		<plugin>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<executions>
+				<execution>
+					<phase>test</phase>
+					<goals>
+						<goal>run</goal>
+					</goals>
+					<configuration>
+						<tasks>
+							<ant antfile="${build.testOutputDirectory}/antunit/tests.xml"
+							  inheritAll="false" inheritRefs="false">
+							  <property name="test.classpath" refid="maven.test.classpath" />
+							</ant>
+						</tasks>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+  </build>
+
   <dependencies>
 	<dependency>
 		<groupId>org.apache.ant</groupId>
 		<artifactId>ant</artifactId>
 		<version>1.8.2</version>
 		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.ant</groupId>
+		<artifactId>ant-antunit</artifactId>
+		<version>1.0</version>
+		<scope>test</scope>
 	</dependency>
 
     <dependency>
