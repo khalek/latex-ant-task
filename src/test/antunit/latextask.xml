@@ -1,7 +1,10 @@
 <project xmlns:au="antlib:org.apache.ant.antunit" >
+		
+	<property file="test.properties" /> 
+	
 	<taskdef name="latex" 
 		classname="se.khalek.ant.LaTeXTask"
-		classpath="../../classes"/> 
+		classpath="${compile.classpath}"/>
 
 	<au:logcapturer/>
 	
