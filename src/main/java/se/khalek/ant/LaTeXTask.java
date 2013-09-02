@@ -1,7 +1,9 @@
 package se.khalek.ant;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
 
@@ -154,10 +156,13 @@ public class LaTeXTask extends Task {
 						"/opt/texbin/pdflatex -interaction=errorstopmode " +
 						"-output-directory=" + workingDir + " " + 
 						sourceFile.getCanonicalPath());
-				p.waitFor();
+				// Log the output from pdflatex.
+				String line;
+				BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				while ((line = output.readLine()) != null) {
+					log(line);
+				}
 			} catch (IOException e) {
-				throw new BuildException(e.getMessage());
-			} catch (InterruptedException e) {
 				throw new BuildException(e.getMessage());
 			}
 		}
