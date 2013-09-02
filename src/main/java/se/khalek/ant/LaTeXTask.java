@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.Path;
 
 /**
  * Ant task for compiling LaTeX documents. The task uses pdfTeX as compiler.
