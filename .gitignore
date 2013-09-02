@@ -9,3 +9,6 @@ target
 # Eclipse Files #
 .classpath
 .project
+
+# Swap Files #
+*.swp
