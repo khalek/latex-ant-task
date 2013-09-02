@@ -21,6 +21,7 @@
 	<!-- test that actual file exists -->
 	<target name="testRealFileExist">
 		<latex source="simple-article.tex" workingdir="${test.directory}/samples"/>
+		<au:assertFileExists file="samples/simple-article.tex"/>
 	</target>
 
 	<!-- test abnormal way to define working directory -->
