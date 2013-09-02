@@ -1,0 +1,4 @@
+<project xmlns:au="antlib:org.apache.ant.antunit">
+	<!-- placeholder test -->
+	<target name="testDoNothing"/>
+</project>
