@@ -1,11 +1,13 @@
 package se.khalek.ant;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Path;
 
 /**
  * Ant task for compiling LaTeX documents. The task uses pdfTeX as compiler.
@@ -33,7 +35,8 @@ public class LaTeXTask extends Task {
 		 * @param dir Working directory.
 		 */
 		public void setWorkingDir(String dir) {
-			workingDir = dir;
+			File directory = new File(workingDir + "/" + dir);
+			workingDir = directory.getAbsolutePath();
 		}
 		
 		/**
@@ -74,7 +77,12 @@ public class LaTeXTask extends Task {
 		public void execute() throws BuildException {
 			// Make sure that source file is a required attribute.
 			if (source == null) {
-					throw new BuildException("No latex source file was given.");
+				throw new BuildException("No latex source file was given.");
+			}
+			String absolutePath = workingDir + "/" + source;
+			File file = new File(absolutePath);
+			if (! file.exists()) {
+				throw new BuildException("File " + absolutePath + " does not exist.");
 			}
 						
 			log("Executing LaTeX ANT Task, Version " + version());

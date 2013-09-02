@@ -1,7 +1,7 @@
 <project xmlns:au="antlib:org.apache.ant.antunit" >
-		
+				
 	<property file="test.properties" /> 
-	
+			
 	<taskdef name="latex" 
 		classname="se.khalek.ant.LaTeXTask"
 		classpath="${compile.classpath}"/>
@@ -10,7 +10,7 @@
 	<target name="setUp">
 		<au:logcapturer/>
 	</target>
-	
+			
 	<!-- test without source file -->
 	<target name="testExecutionNoSource">
 		<au:expectfailure message="no latex source file was given.">
@@ -18,8 +18,14 @@
 		</au:expectfailure>
 	</target>
 
-	<!-- test the execution -->
-	<target name="testExecution">
-		<latex source="test.tex"/>
+	<!-- test that actual file exists -->
+	<target name="testRealFileExist">
+		<latex source="simple-article.tex" workingdir="${test.directory}/samples"/>
 	</target>
+
+	<!-- test abnormal way to define working directory -->
+	<target name="testAbnormalDirectory">
+		<latex source="simple-article.tex" workingdir="${test.directory}/../antunit/samples"/>
+	</target>
+
 </project>

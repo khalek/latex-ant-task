@@ -1,4 +1,6 @@
-<project xmlns:au="antlib:org.apache.ant.antunit" >
+<project name="Log Tests"
+		xmlns:au="antlib:org.apache.ant.antunit"
+		default="simple">
 		
 	<property file="test.properties" /> 
 	
@@ -7,19 +9,7 @@
 		classpath="${compile.classpath}"/>
 
 
-	<target name="setUp">
-		<au:logcapturer/>
-	</target>
-	
-	<!-- test without source file -->
-	<target name="testExecutionNoSource">
-		<au:expectfailure message="no latex source file was given.">
-			<latex/>
-		</au:expectfailure>
-	</target>
-
-	<!-- test the execution -->
-	<target name="testExecution">
-		<latex source="test.tex"/>
+	<target name="simple">
+		<latex source="simple-article.tex" workingdir="../antunit/samples"/>
 	</target>
 </project>
