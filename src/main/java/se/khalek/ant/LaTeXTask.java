@@ -17,6 +17,7 @@ public class LaTeXTask extends Task {
 	private String source;
 	private String workingDir = System.getProperty("user.dir");
 	private boolean clean;
+	private boolean pdftex;
 
 	/**
 	 * Sets the required attribute for filename to source latex file.
@@ -48,6 +49,17 @@ public class LaTeXTask extends Task {
 	 */
 	public void setClean(boolean doClean) {
 		clean = doClean;
+	}
+
+	/**
+	 * Sets the value of the attribute pdftex.
+	 * 
+	 * @param doPdftex
+	 *            Pass true if the task should execute pdflatex, false
+	 *            otherwise.
+	 */
+	public void setPdftex(boolean doPdftex) {
+		pdftex = doPdftex;
 	}
 
 	/**
@@ -125,12 +137,23 @@ public class LaTeXTask extends Task {
 
 		// Convert the file name and its path to a File object.
 		File sourceFile = convertToFile(workingDir, source);
-		
+
 		log("Executing LaTeX ANT Task, Version " + version());
 
 		// Log the values of all attributes.
 		log("source \t = " + source);
 		log("workingDir \t = " + workingDir);
 		log("clean \t = " + clean);
+		log("pdftex \t = " + pdftex);
+
+		if (pdftex) {
+			log("Exec: pdflatex -interaction=errorstopmode " + source);
+			try {
+				Runtime.getRuntime().exec(System.getenv("pdflatex"));
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException(e.getMessage());
+			}
+		}
 	}
 }
