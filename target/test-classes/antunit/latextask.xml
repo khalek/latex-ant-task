@@ -3,9 +3,12 @@
 		classname="se.khalek.ant.LaTeXTask"
 		classpath="../../classes"/> 
 
-	<!-- test the execution -->
-	<target name="testExecution">
-		<latex/>
+	<au:logcapturer/>
+	
+	<!-- test without source file -->
+	<target name="testExecutionNoSource">
+		<au:expectfailure message="No latex source file was given.">
+			<latex/>
+		</au:expectfailure>
 	</target>
-
 </project>

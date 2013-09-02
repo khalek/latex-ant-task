@@ -8,7 +8,16 @@ import org.apache.tools.ant.Task;
  *
  */
 public class LaTeXTask extends Task {
+		String source;
+
+		public void setSource(String src) {
+			source = src;
+		}
+
 		public void execute() throws BuildException {
-				System.out.println("Task completed!");
+			if (source == null) {
+					throw new BuildException("No latex source file was given.");
+			}
+			log(source);
 		}
 }

@@ -4,7 +4,7 @@
 	<taskdef uri="antlib:org.apache.ant.antunit"
 			 resource="org/apache/ant/antunit/antlib.xml"
 			 classpath="${test.classpath}" />
-
+	
 	<au:antunit>
 		<fileset dir="." includes="latextask.xml"/>
 		<au:plainlistener/>
