@@ -18,7 +18,7 @@
 		</au:expectfailure>
 	</target>
 
-	<!-- test that actual file exists -->
+	<!-- test that an actual file exists -->
 	<target name="testRealFileExist">
 		<latex source="simple-article.tex" workingdir="target/test-classes/samples"/>
 		<au:assertFileExists file="${test.directory}/samples/simple-article.tex"/>
@@ -26,7 +26,8 @@
 
 	<!-- test abnormal way to define working directory -->
 	<target name="testAbnormalDirectory">
-		<latex source="simple-article.tex" workingdir="${test.directory}/samples"/>
+		<latex source="simple-article.tex" workingdir="${test.directory}/../test-classes/samples"/>
+		<au:assertLogContains text="workingDir &#009; = ${test.directory}/samples"/>
 	</target>
 
 </project>
