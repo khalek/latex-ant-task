@@ -1,4 +1,11 @@
-<project xmlns:au="antlib:org.apache.ant.antunit">
-	<!-- placeholder test -->
-	<target name="testDoNothing"/>
+<project xmlns:au="antlib:org.apache.ant.antunit" >
+	<taskdef name="latex" 
+		classname="se.khalek.ant.LaTeXTask"
+		classpath="../../classes"/> 
+
+	<!-- test the execution -->
+	<target name="testExecution">
+		<latex/>
+	</target>
+
 </project>

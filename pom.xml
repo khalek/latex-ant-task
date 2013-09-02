@@ -51,8 +51,8 @@
 					<configuration>
 						<tasks>
 							<ant antfile="${build.testOutputDirectory}/antunit/tests.xml"
-							  inheritAll="false" inheritRefs="false">
-							  <property name="test.classpath" refid="maven.test.classpath" />
+								 inheritAll="false" inheritRefs="false">
+							<property name="test.classpath" refid="maven.test.classpath" />
 							</ant>
 						</tasks>
 					</configuration>
