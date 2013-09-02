@@ -20,13 +20,13 @@
 
 	<!-- test that actual file exists -->
 	<target name="testRealFileExist">
-		<latex source="simple-article.tex" workingdir="${test.directory}/samples"/>
-		<au:assertFileExists file="samples/simple-article.tex"/>
+		<latex source="simple-article.tex" workingdir="target/test-classes/samples"/>
+		<au:assertFileExists file="${test.directory}/samples/simple-article.tex"/>
 	</target>
 
 	<!-- test abnormal way to define working directory -->
 	<target name="testAbnormalDirectory">
-		<latex source="simple-article.tex" workingdir="${test.directory}/../antunit/samples"/>
+		<latex source="simple-article.tex" workingdir="${test.directory}/samples"/>
 	</target>
 
 </project>

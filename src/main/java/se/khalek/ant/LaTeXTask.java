@@ -35,7 +35,7 @@ public class LaTeXTask extends Task {
 		 * @param dir Working directory.
 		 */
 		public void setWorkingDir(String dir) {
-			workingDir += "/" + dir;
+			workingDir = dir;
 		}
 		
 		/**

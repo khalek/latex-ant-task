@@ -10,6 +10,6 @@
 
 
 	<target name="simple">
-		<latex source="simple-article.tex" workingdir="../antunit/samples"/>
+		<latex source="simple-article.tex" workingdir="../test-classes/samples"/>
 	</target>
 </project>
