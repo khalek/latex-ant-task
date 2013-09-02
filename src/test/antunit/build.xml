@@ -10,6 +10,6 @@
 
 
 	<target name="simple">
-		<latex source="simple-article.tex" workingdir="../test-classes/samples"/>
+		<latex source="simple-article.tex" workingdir="../test-classes/samples" pdftex="true"/>
 	</target>
 </project>

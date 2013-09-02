@@ -10,6 +10,12 @@
 	<target name="setUp">
 		<au:logcapturer/>
 	</target>
+
+	<target name="tearDown">
+		<delete> 
+			<fileset dir="${test.directory}/samples" excludes="*.tex"/>
+		</delete>
+	</target>
 			
 	<!-- test without source file -->
 	<target name="testExecutionNoSource">
@@ -35,6 +41,15 @@
 	<target name="testAbnormalDirectory">
 		<latex source="simple-article.tex" workingdir="${test.directory}/../test-classes/samples"/>
 		<au:assertLogContains text="workingDir &#009; = ${test.directory}/samples"/>
+	</target>
+
+	<!-- test if pdflatex executes -->
+	<target name="testPdfTex">
+		<latex 
+			source="simple-article.tex" 
+			workingdir="target/test-classes/samples"
+			pdftex="true"/>
+		<au:assertFileExists file="${test.directory}/samples/simple-article.pdf"/>
 	</target>
 
 </project>

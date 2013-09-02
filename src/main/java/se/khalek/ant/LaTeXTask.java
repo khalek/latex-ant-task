@@ -146,12 +146,18 @@ public class LaTeXTask extends Task {
 		log("clean \t = " + clean);
 		log("pdftex \t = " + pdftex);
 
+		// Execute pdflatex if attribute pdftex is true
 		if (pdftex) {
 			log("Exec: pdflatex -interaction=errorstopmode " + source);
 			try {
-				Runtime.getRuntime().exec(System.getenv("pdflatex"));
+				Process p = Runtime.getRuntime().exec(
+						"/opt/texbin/pdflatex -interaction=errorstopmode " +
+						"-output-directory=" + workingDir + " " + 
+						sourceFile.getCanonicalPath());
+				p.waitFor();
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new BuildException(e.getMessage());
+			} catch (InterruptedException e) {
 				throw new BuildException(e.getMessage());
 			}
 		}
