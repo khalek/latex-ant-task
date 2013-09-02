@@ -35,8 +35,7 @@ public class LaTeXTask extends Task {
 		 * @param dir Working directory.
 		 */
 		public void setWorkingDir(String dir) {
-			File directory = new File(workingDir + "/" + dir);
-			workingDir = directory.getAbsolutePath();
+			workingDir += "/" + dir;
 		}
 		
 		/**
@@ -68,6 +67,17 @@ public class LaTeXTask extends Task {
 			}
 			return version;
 		}
+		
+		private String canonical() throws BuildException {
+			File directory = new File(workingDir);
+			try {
+				return directory.getCanonicalPath();
+			} catch (IOException e) {
+				// Print stack trace only during development
+				e.printStackTrace();
+				throw new BuildException(e.getMessage());				
+			}
+		}
 
 		/**
 		 * Executes this and any nested tasks.
@@ -79,10 +89,13 @@ public class LaTeXTask extends Task {
 			if (source == null) {
 				throw new BuildException("No latex source file was given.");
 			}
-			String absolutePath = workingDir + "/" + source;
-			File file = new File(absolutePath);
+			
+			workingDir = canonical();
+			
+			String canonicalPath = workingDir + "/" + source;
+			File file = new File(canonicalPath);
 			if (! file.exists()) {
-				throw new BuildException("File " + absolutePath + " does not exist.");
+				throw new BuildException("File " + canonicalPath + " does not exist.");
 			}
 						
 			log("Executing LaTeX ANT Task, Version " + version());
