@@ -9,7 +9,7 @@ Features:
 
 ## Building and installing
 
-With Maven is is fairly simple to build the source. We only need to provide one argument.
+With Maven it is fairly simple to build the source. We only need to provide one argument.
 
 ```
 # In the root catalog
@@ -28,7 +28,7 @@ The basics of the task will be defined here, together with a few examples.
 
 ### A simple task
 
-First, this is the most simple way to execute the task. Makes use of default values. The only required attribute thus far is `source`, which is the filename for the document to produce a PDF from. It is default to not run `pdflatex` so to compile our document we have to set the attribute `pdftex` to true.
+First we will look at the most simple way to execute the task that makes use of default values. The only required attribute so far is `source`, which is the filename for the LaTeX document. Default is to not run `pdflatex` so to compile our document we have to set the attribute `pdftex` to ***true***.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -47,6 +47,8 @@ First, this is the most simple way to execute the task. Makes use of default val
 	</target>
 </project>
 ```
+As we can see, the task first needs to be defined before we can use it. In the definition, we pass on the name of the Java class that implements the task, with the package name as prefix. In this example we also provide the path to the jar.
+
 If we would like to clean after a compilation by perhaps removing some of the produced files, we can enable the attribute `clean`. The default files that will be removed is those with the file extensions .log or .aux. With the attribute `includes` we can choose our own files.
 
 ```xml
