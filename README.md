@@ -36,7 +36,7 @@ First we will look at the most simple way to execute the task that makes use of 
 
 	<!-- First define the task. Let's call it latex -->
 	<taskdef name="latex"
-		classname="se.khalek.ant.LaTeXTask"
+		classname="se.khalek.ant.LaTeX"
 		classpath="path/to/jar"/>
 
 	<!-- Compile a LaTeX document to PDF. -->
