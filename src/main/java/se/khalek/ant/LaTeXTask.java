@@ -143,7 +143,30 @@ public class LaTeXTask extends Task {
 		}
 		return commands;
 	}
-	
+
+	/**
+	 * Send the output from a given process to the log for the Ant task
+	 * represented by this class.
+	 * 
+	 * @param p
+	 *            The process, which outputs will be logged.
+	 */
+	private void logOutput(Process p) {
+		// Reader for the incoming stream from the process.
+		BufferedReader output = new BufferedReader(new InputStreamReader(
+				p.getInputStream()));
+		
+		String line;
+		try {
+			while ((line = output.readLine()) != null) {
+				log(line);
+			}
+		} catch (IOException e) {
+			// Just log that output no longer works.
+			log("Output ceased to function");
+		}
+	}
+
 	/**
 	 * Executes this tasks. Relevant information gets logged during execution of
 	 * the task.
@@ -177,23 +200,22 @@ public class LaTeXTask extends Task {
 			try {
 				Process pdfTex = Runtime.getRuntime().exec(
 						commands() + sourceFile.getCanonicalPath());
+
 				// Log the output from pdflatex.
-				String line;
-				BufferedReader output = new BufferedReader(
-						new InputStreamReader(pdfTex.getInputStream()));
-				while ((line = output.readLine()) != null) {
-					log(line);
-				}
+				logOutput(pdfTex);
+
 				// Wait for pdfTex to finish and examine its exit value.
 				int exitVal = pdfTex.waitFor();
 				log("pdfTeX exited with exit value " + exitVal + ".");
 				if (exitVal != 0) {
-					throw new BuildException("Failure in generating pdf document.");
+					throw new BuildException(
+							"Failure in generating pdf document.");
 				}
 			} catch (IOException e) {
 				throw new BuildException(e.getMessage());
 			} catch (InterruptedException e) {
-				throw new BuildException("Disaster occured :C - " + e.getMessage());
+				throw new BuildException("Disaster occured :C - "
+						+ e.getMessage());
 			}
 		}
 	}
