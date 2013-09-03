@@ -9,10 +9,6 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.Delete;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.ResourceCollection;
-import org.apache.tools.ant.types.resources.comparators.FileSystem;
 
 /**
  * Implementation for an Ant task that compiles LaTeX documents with pdfTeX. The
@@ -28,7 +24,7 @@ public class LaTeXTask extends Task {
 	private String workingDir = System.getProperty("user.dir");
 	private boolean clean;
 	private boolean pdftex;
-	
+
 	// Files that should be removed by a clean
 	private String cleanTargets = "*.log *.aux";
 
@@ -95,27 +91,36 @@ public class LaTeXTask extends Task {
 	}
 
 	/**
-	 * Creates and return a file object based on two parameters. The first
-	 * parameter is the directory to the file and the second, the name of the
-	 * file.
+	 * Creates and return a File object based on the path to the directory and
+	 * the filename to a specific file.
 	 * 
 	 * @param dir
-	 *            Path to the files directory.
+	 *            The directory path to the file.
 	 * @param file
-	 *            The name of the file.
-	 * @return A File object for the file.
+	 *            The filename
+	 * @return A File object that represents an existing file.
 	 * @throws BuildException
-	 *             If the file does not exist.
+	 *             If the file does not exist for the given path.
 	 */
-	private File convertToFile(String dir, String file, String type) throws BuildException {
-		return convertToFile(dir + File.separator + file, type);
+	private File convertToFile(String dir, String file) throws BuildException {
+		return convertToFile(dir + File.separator + file);
 	}
-	
-	private File convertToFile(String path, String type) throws BuildException {
+
+	/**
+	 * Creates and return a File object based on the path to the file or
+	 * directory.
+	 * 
+	 * @param path
+	 *            Path to the directory or file.
+	 * @return The file or directory represented as a File object.
+	 * @throws BuildException
+	 *             If the file or directory does not exist.
+	 */
+	private File convertToFile(String path) throws BuildException {
 		try {
 			File f = new File(path).getCanonicalFile();
 			if (!f.exists()) {
-				throw new BuildException(type + " " + path + " does not exist.");
+				throw new BuildException(path + " does not exist.");
 			}
 			return f;
 		} catch (IOException e) {
@@ -178,16 +183,16 @@ public class LaTeXTask extends Task {
 		}
 
 		// Convert working directory String to a directory with canonical path.
-		File workDir = convertToFile(workingDir, "Directory");
+		File workDir = convertToFile(workingDir);
 
 		// Convert the file name and its path to a File object.
-		File sourceFile = convertToFile(workingDir, source, "File");
+		File sourceFile = convertToFile(workingDir, source);
 
 		log("Executing LaTeX ANT Task, Version " + version());
 
 		// Log the values of all attributes.
 		log("source \t = " + source);
-		log("workingDir \t = " + workDir.getPath());
+		log("workingdir \t = " + workDir.getPath());
 		log("clean \t = " + clean);
 		log("pdftex \t = " + pdftex);
 
@@ -196,7 +201,7 @@ public class LaTeXTask extends Task {
 			log("Exec: pdflatex -interaction=nonstopmode " + source);
 			try {
 				Process pdfTex = Runtime.getRuntime().exec(
-						commands() + sourceFile.getCanonicalPath());
+						commands() + sourceFile.getPath());
 
 				// Log the output from pdflatex.
 				logOutput(pdfTex);
@@ -208,21 +213,12 @@ public class LaTeXTask extends Task {
 					throw new BuildException(
 							"Failure in generating pdf document.");
 				}
-
-				// If set, clean the working directory.
-				if (clean) {
-					Delete del = new Delete();
-					del.setDir(workDir);
-					del.setIncludes(cleanTargets);
-					del.execute();
-				}
 			} catch (IOException e) {
-				throw new BuildException(e.getMessage());
+				throw new BuildException("Failed to execute pdflatex: "
+						+ e.getMessage());
 			} catch (InterruptedException e) {
 				throw new BuildException("Disaster occured :C - "
 						+ e.getMessage());
-			} catch (NullPointerException e) {
-				e.printStackTrace();
 			}
 		}
 	}
