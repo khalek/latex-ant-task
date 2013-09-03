@@ -10,8 +10,17 @@ import org.apache.tools.ant.Task;
 
 public abstract class AbstractTask extends Task {
 	// Attributes //
+	/**
+	 * Attribute that determines if {@code pdflatex} should be executed.
+	 */
 	protected boolean pdftex;
+	/**
+	 * Attribute for the filename of the LaTeX document.
+	 */
 	protected String source;
+	/**
+	 * Attribute for the path to the document's directory.
+	 */
 	protected String workingDir;
 	
 	/**
