@@ -24,7 +24,6 @@ public class LaTeXTask extends Task {
 	// Attributes of the task. //
 	private boolean clean;
 	private boolean pdftex;
-	private boolean quiet;
 	private String includes;
 	private String source;
 	private String workingDir;
@@ -33,7 +32,6 @@ public class LaTeXTask extends Task {
 		super();
 		workingDir = System.getProperty("user.dir");
 		clean = false;
-		quiet = false;
 		includes = "*.log *.aux";
 	}
 
@@ -78,16 +76,6 @@ public class LaTeXTask extends Task {
 	 */
 	public void setPdftex(boolean doPdftex) {
 		pdftex = doPdftex;
-	}
-
-	/**
-	 * Sets the value of the attribute quiet.
-	 * 
-	 * @param beQuiet
-	 *            Sets to false if no output is wanted, unless failure occurs.
-	 */
-	public void setQuiet(boolean beQuiet) {
-		quiet = beQuiet;
 	}
 
 	/**
@@ -187,7 +175,7 @@ public class LaTeXTask extends Task {
 			log("Output ceased to function");
 		}
 	}
-
+	
 	/**
 	 * Executes this tasks. Relevant information gets logged during execution of
 	 * the task.
@@ -214,7 +202,6 @@ public class LaTeXTask extends Task {
 		log("workingdir \t = " + workDir.getPath());
 		log("clean \t = " + clean);
 		log("pdftex \t = " + pdftex);
-		log("quiet \t = " + quiet);
 
 		// Execute pdflatex if attribute pdftex is true
 		int exitVal = 0;
