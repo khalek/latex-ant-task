@@ -217,6 +217,7 @@ public class LaTeXTask extends Task {
 		log("quiet \t = " + quiet);
 
 		// Execute pdflatex if attribute pdftex is true
+		int exitVal = 0;
 		if (pdftex) {
 			log("Exec: pdflatex -interaction=nonstopmode " + source);
 			try {
@@ -227,7 +228,7 @@ public class LaTeXTask extends Task {
 				logOutput(pdfTex);
 
 				// Wait for pdfTex to finish and examine its exit value.
-				int exitVal = pdfTex.waitFor();
+				exitVal = pdfTex.waitFor();
 				log("pdfTeX exited with exit value " + exitVal + ".");
 				if (exitVal != 0) {
 					throw new BuildException(
@@ -242,8 +243,8 @@ public class LaTeXTask extends Task {
 			}
 		}
 
-		// If set, clean the working directory.
-		if (clean) {
+		// If set and no failures were generated, clean the working directory.
+		if (clean && exitVal == 0) {
 			// Create the file set with the target directory and files to
 			// delete.
 			FileSet fs = new FileSet();

@@ -53,7 +53,7 @@
 	
 	<!-- test pdflatex with error in .tex file -->
 	<target name="testPdfTeXError">
-		<au:expectfailure>
+		<au:expectfailure message="Failure in generating pdf document">
 			<latex 
 				source="error.tex" 
 				workingdir="target/test-classes/samples"
@@ -78,5 +78,17 @@
 			pdftex="true"
 			clean="true"/>
 		<au:assertFileDoesntExist file="${test.directory}/samples/simple-article.log"/>
+	</target>
+
+	<!-- test pdflatex with clean, but error in .tex file -->
+	<target name="testPdfTexCleanError">
+		<au:expectfailure>
+			<latex 
+				source="error.tex" 
+				workingdir="target/test-classes/samples"
+				pdftex="true"
+				clean="true"/>
+			<au:assertFileDoesExists file="${test.directory}/samples/error.log"/>
+		</au:expectfailure>
 	</target>
 </project>
