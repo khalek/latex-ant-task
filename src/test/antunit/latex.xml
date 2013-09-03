@@ -29,13 +29,6 @@
 		<au:assertFileExists file="${test.directory}/samples/simple-article.tex"/>
 	</target>
 
-	<!-- test for non-existing file  -->
-	<target name="testNonExistingFile">
-		<au:expectfailure message="File ${test.directory}/samples/i-dont-exist.tex does not exist">
-			<latex source="i-dont-exist.tex" workingdir="target/test-classes/samples"/>
-		</au:expectfailure>
-	</target>
-	
 	<!-- test abnormal way to define working directory -->
 	<target name="testAbnormalDirectory">
 		<latex source="simple-article.tex" workingdir="${test.directory}/../test-classes/samples"/>

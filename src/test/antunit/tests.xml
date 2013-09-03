@@ -9,4 +9,9 @@
 		<fileset dir="." includes="latex.xml"/>
 		<au:plainlistener/>
 	</au:antunit>
+	
+	<au:antunit>
+		<fileset dir="." includes="latextask.xml"/>
+		<au:plainlistener/>
+	</au:antunit>
 </project>			 

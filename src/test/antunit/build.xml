@@ -19,4 +19,8 @@
 	<target name="error">
 		<latex source="error.tex" workingdir="../test-classes/samples" pdftex="true"/>
 	</target>
+	
+	<target name="nonexisting">
+		<latex source="i-dont-exist.tex" workingdir="samples" pdftex="true"/>
+	</target>
 </project>

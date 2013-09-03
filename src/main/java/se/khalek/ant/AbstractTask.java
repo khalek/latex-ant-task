@@ -11,10 +11,6 @@ import org.apache.tools.ant.Task;
 public abstract class AbstractTask extends Task {
 	// Attributes //
 	/**
-	 * Attribute that determines if {@code pdflatex} should be executed.
-	 */
-	protected boolean pdftex;
-	/**
 	 * Attribute for the filename of the LaTeX document.
 	 */
 	protected String source;
@@ -22,18 +18,7 @@ public abstract class AbstractTask extends Task {
 	 * Attribute for the path to the document's directory.
 	 */
 	protected String workingDir;
-	
-	/**
-	 * Sets the value of the attribute pdftex.
-	 * 
-	 * @param doPdftex
-	 *            Pass true if the task should execute pdflatex, false
-	 *            otherwise.
-	 */
-	public void setPdftex(boolean doPdftex) {
-		pdftex = doPdftex;
-	}
-	
+
 	/**
 	 * Sets the required attribute for filename to source latex file.
 	 * 
@@ -43,7 +28,7 @@ public abstract class AbstractTask extends Task {
 	public void setSource(String src) {
 		source = src;
 	}
-	
+
 	/**
 	 * Sets the working directory for pdfTeX. If this attribute is not set then
 	 * the current directory will be chosen.
@@ -54,7 +39,7 @@ public abstract class AbstractTask extends Task {
 	public void setWorkingDir(String dir) {
 		workingDir = dir;
 	}
-	
+
 	/**
 	 * Creates and return a File object based on the path to the file or
 	 * directory.
@@ -92,7 +77,7 @@ public abstract class AbstractTask extends Task {
 	protected File convertToFile(String dir, String file) throws BuildException {
 		return convertToFile(dir + File.separator + file);
 	}
-	
+
 	/**
 	 * Send the output from a given process to the log for the Ant task
 	 * represented by this class.
@@ -115,9 +100,12 @@ public abstract class AbstractTask extends Task {
 			log("Output ceased to function");
 		}
 	}
-	
+
 	/**
 	 * Executes the task.
+	 * 
+	 * @throws BuildException
+	 *             if failures are caught during execution of the task.
 	 */
-	public abstract void execute();
+	public abstract void execute() throws BuildException;
 }

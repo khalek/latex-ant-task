@@ -12,6 +12,7 @@ import org.apache.tools.ant.BuildException;
  * right. This class can also be used for testing purposes.
  */
 public class LaTeXTask extends AbstractTask {
+	private int exitValue;
 
 	/**
 	 * Default constructor, does nothing.
@@ -24,20 +25,28 @@ public class LaTeXTask extends AbstractTask {
 	 * Alternative constructor. Sets the values for all attributes in this
 	 * class.
 	 * 
-	 * @param pdftex
-	 *            Determines if or if not to run {@code pdflatex}.
 	 * @param source
 	 *            The file name of the LaTeX document.
 	 * @param workingDir
 	 *            The path to the directory for the document.
 	 */
-	protected LaTeXTask(boolean pdftex, String source, String workingDir) {
+	protected LaTeXTask(String source, String workingDir) {
 		super();
-		this.pdftex = pdftex;
 		this.source = source;
 		this.workingDir = workingDir;
+		exitValue = 0;
 	}
-	
+
+	/**
+	 * Retrieves and returns the exit value from the latest execution of
+	 * {@code pdflatex}.
+	 * 
+	 * @return The exit value for the latest execution of {@code pdflatex}.
+	 */
+	public int getExitValue() {
+		return exitValue;
+	}
+
 	/**
 	 * Determines the pdflatex of the system and adds all necessary arguments,
 	 * which are returned together as a single String.
@@ -56,37 +65,39 @@ public class LaTeXTask extends AbstractTask {
 		return commands;
 	}
 
-	public void execute() {
+	/**
+	 * Execute this task. This task will attempt to execute the system
+	 * installation of {@code pdflatex.} Any failures during the execution will
+	 * result in a {@code BuildException}.
+	 * 
+	 * @throws BuildException
+	 *             if a failure occurs during compilation of the document.
+	 */
+	public void execute() throws BuildException {
 		// Convert the file name and its path to a File object.
 		File sourceFile = convertToFile(workingDir, source);
-		
-		// Execute pdflatex if attribute pdftex is true
-		int exitVal = 0;
-		if (pdftex) {
-			log("Exec: pdflatex -interaction=nonstopmode "
-					+ sourceFile.getName());
-			try {
-				Process pdfTex = Runtime.getRuntime().exec(
-						commands() + sourceFile.getPath());
 
-				// Log the outputs from pdflatex.
-				logOutput(pdfTex);
+		// Execute pdflatex
+		log("Exec: pdflatex -interaction=nonstopmode " + sourceFile.getName());
+		try {
+			Process pdfTex = Runtime.getRuntime().exec(
+					commands() + sourceFile.getPath());
 
-				// Wait for pdfTex to finish and examine its exit value.
-				exitVal = pdfTex.waitFor();
-				log("pdfTeX exited with exit value " + exitVal + ".");
-				if (exitVal != 0) {
-					throw new BuildException(
-							"Failure in generating pdf document.");
-				}
-				// Should only be thrown by Runtime.getRunTime().exec(String).
-			} catch (IOException e) {
-				throw new BuildException("Failed to execute pdflatex: "
-						+ e.getMessage());
-			} catch (InterruptedException e) {
-				throw new BuildException("Disaster occured :C - "
-						+ e.getMessage());
+			// Log the outputs from pdflatex.
+			logOutput(pdfTex);
+
+			// Wait for pdfTex to finish and examine its exit value.
+			exitValue = pdfTex.waitFor();
+			log("pdfTeX exited with exit value " + exitValue + ".");
+			if (exitValue != 0) {
+				throw new BuildException("Failure in generating pdf document.");
 			}
+			// Should only be thrown by Runtime.getRunTime().exec(String).
+		} catch (IOException e) {
+			throw new BuildException("Failed to execute pdflatex: "
+					+ e.getMessage());
+		} catch (InterruptedException e) {
+			throw new BuildException("Disaster occured :C - " + e.getMessage());
 		}
 	}
 }

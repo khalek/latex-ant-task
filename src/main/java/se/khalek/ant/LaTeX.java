@@ -21,6 +21,7 @@ public class LaTeX extends AbstractTask {
 	// Attributes of the task. //
 	private boolean clean;
 	private String includes;
+	private boolean pdftex;
 
 	/**
 	 * Default constructor. Sets some initial values to some of the attributes.
@@ -54,23 +55,16 @@ public class LaTeX extends AbstractTask {
 	public void setIncludes(String includes) {
 		this.includes = includes;
 	}
-
+	
 	/**
-	 * Determines the pdflatex of the system and adds all necessary arguments,
-	 * which are returned together as a single String.
+	 * Sets the value of the attribute pdftex.
 	 * 
-	 * @return The command to execute pdflatex and its arguments.
+	 * @param doPdftex
+	 *            Pass true if the task should execute pdflatex, false
+	 *            otherwise.
 	 */
-	private String commands() {
-		// Add any additional commands into this array.
-		String[] cmdArr = { "pdflatex", "-interaction=nonstopmode",
-				"-output-directory=" + workingDir };
-		// Convert to a single String.
-		String commands = "";
-		for (String c : cmdArr) {
-			commands += c + " ";
-		}
-		return commands;
+	public void setPdftex(boolean doPdftex) {
+		pdftex = doPdftex;
 	}
 
 	/**
@@ -133,9 +127,6 @@ public class LaTeX extends AbstractTask {
 		// Convert working directory String to a directory with canonical path.
 		File workDir = convertToFile(workingDir);
 
-		// Convert the file name and its path to a File object.
-		File sourceFile = convertToFile(workingDir, source);
-
 		log("Executing LaTeX ANT Task, Version " + version());
 
 		// Log the values of all attributes.
@@ -143,37 +134,20 @@ public class LaTeX extends AbstractTask {
 		log("workingdir \t = " + workDir.getPath());
 		log("clean \t = " + clean);
 		log("pdftex \t = " + pdftex);
-
-		// Execute pdflatex if attribute pdftex is true
-		int exitVal = 0;
+		
+		int exitValue = 0;
+		
+		// Create the task that is executing pdflatex, if pdftex is true.
 		if (pdftex) {
-			log("Exec: pdflatex -interaction=nonstopmode " + source);
-			try {
-				Process pdfTex = Runtime.getRuntime().exec(
-						commands() + sourceFile.getPath());
-
-				// Log the outputs from pdflatex.
-				logOutput(pdfTex);
-
-				// Wait for pdfTex to finish and examine its exit value.
-				exitVal = pdfTex.waitFor();
-				log("pdfTeX exited with exit value " + exitVal + ".");
-				if (exitVal != 0) {
-					throw new BuildException(
-							"Failure in generating pdf document.");
-				}
-				// Should only be thrown by Runtime.getRunTime().exec(String).
-			} catch (IOException e) {
-				throw new BuildException("Failed to execute pdflatex: "
-						+ e.getMessage());
-			} catch (InterruptedException e) {
-				throw new BuildException("Disaster occured :C - "
-						+ e.getMessage());
-			}
+			LaTeXTask execTask = new LaTeXTask(source, workingDir);
+			execTask.setProject(getProject());
+			execTask.setTaskName(getTaskName());
+			execTask.execute();
+			exitValue = execTask.getExitValue();
 		}
 
 		// If set and no failures were generated, clean the working directory.
-		if (clean && exitVal == 0) {
+		if (clean && exitValue == 0) {
 			performClean(workDir);
 		}
 	}
