@@ -9,7 +9,7 @@ Features:
 
 ## Building and installing
 
-With Maven is is fairly simple to build the source. We only need to provide the argument ```package```.
+With Maven is is fairly simple to build the source. We only need to provide one argument.
 
 ```
 # In the root catalog
@@ -20,7 +20,7 @@ If we would like to build without running all tests, that is also possible.
 ```
 mvn package -Dmaven.test.skip=true
 ``` 
-Once the build is complete, we can find the jar in `target/latexant-0.1.jar`. It is recommended to install it, copy the jar, to the library catalog in Ant's home directory `$ANT_HOME/libs`. In this way, we don`t have to specify the `classpath`. 
+Once the build is complete, we can find the jar in `target/latexant-0.1.jar`. It is recommended to install it, copy the jar, to the library catalog in Ant's home directory `$ANT_HOME/libs`. In this way, we don't have to specify the `classpath`. 
 
 ## Usage
 
