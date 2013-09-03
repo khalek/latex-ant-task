@@ -52,6 +52,16 @@
 		<au:assertFileExists file="${test.directory}/samples/simple-article.pdf"/>
 	</target>
 	
+	<!-- test pdflatex with error in .tex file -->
+	<target name="testPdfTeXError">
+		<au:expectfailure>
+			<latex 
+				source="error.tex" 
+				workingdir="target/test-classes/samples"
+				pdftex="true"/>
+		</au:expectfailure>
+	</target>
+	
 	<!-- test pdflatex without clean -->
 	<target name="testPdfTexNoClean">
 		<latex 

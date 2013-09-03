@@ -134,7 +134,7 @@ public class LaTeXTask extends Task {
 	 */
 	private String commands() {
 		// Add any additional commands into this array.
-		String[] cmdArr = { "pdflatex", "-interaction=errorstopmode",
+		String[] cmdArr = { "pdflatex", "-interaction=nonstopmode",
 				"-output-directory=" + workingDir };
 		// Convert to a single String.
 		String commands = "";
@@ -143,7 +143,7 @@ public class LaTeXTask extends Task {
 		}
 		return commands;
 	}
-
+	
 	/**
 	 * Executes this tasks. Relevant information gets logged during execution of
 	 * the task.
@@ -173,19 +173,27 @@ public class LaTeXTask extends Task {
 
 		// Execute pdflatex if attribute pdftex is true
 		if (pdftex) {
-			log("Exec: pdflatex -interaction=errorstopmode " + source);
+			log("Exec: pdflatex -interaction=nonstopmode " + source);
 			try {
-				Process p = Runtime.getRuntime().exec(
+				Process pdfTex = Runtime.getRuntime().exec(
 						commands() + sourceFile.getCanonicalPath());
 				// Log the output from pdflatex.
 				String line;
 				BufferedReader output = new BufferedReader(
-						new InputStreamReader(p.getInputStream()));
+						new InputStreamReader(pdfTex.getInputStream()));
 				while ((line = output.readLine()) != null) {
 					log(line);
 				}
+				// Wait for pdfTex to finish and examine its exit value.
+				int exitVal = pdfTex.waitFor();
+				log("pdfTeX exited with exit value " + exitVal + ".");
+				if (exitVal != 0) {
+					throw new BuildException("Failure in generating pdf document.");
+				}
 			} catch (IOException e) {
 				throw new BuildException(e.getMessage());
+			} catch (InterruptedException e) {
+				throw new BuildException("Disaster occured :C - " + e.getMessage());
 			}
 		}
 	}
