@@ -22,14 +22,21 @@ import org.apache.tools.ant.types.FileSet;
  */
 public class LaTeXTask extends Task {
 	// Attributes of the task. //
-	private String source;
-	private String workingDir = System.getProperty("user.dir");
 	private boolean clean;
 	private boolean pdftex;
+	private boolean quiet;
+	private String includes;
+	private String source;
+	private String workingDir;
 
-	// Files that should be removed by a clean
-	private String cleanTargets = "*.log *.aux";
-	
+	public LaTeXTask() {
+		super();
+		workingDir = System.getProperty("user.dir");
+		clean = false;
+		quiet = false;
+		includes = "*.log *.aux";
+	}
+
 	/**
 	 * Sets the required attribute for filename to source latex file.
 	 * 
@@ -71,6 +78,16 @@ public class LaTeXTask extends Task {
 	 */
 	public void setPdftex(boolean doPdftex) {
 		pdftex = doPdftex;
+	}
+
+	/**
+	 * Sets the value of the attribute quiet.
+	 * 
+	 * @param beQuiet
+	 *            Sets to false if no output is wanted, unless failure occurs.
+	 */
+	public void setQuiet(boolean beQuiet) {
+		quiet = beQuiet;
 	}
 
 	/**
@@ -197,6 +214,7 @@ public class LaTeXTask extends Task {
 		log("workingdir \t = " + workDir.getPath());
 		log("clean \t = " + clean);
 		log("pdftex \t = " + pdftex);
+		log("quiet \t = " + quiet);
 
 		// Execute pdflatex if attribute pdftex is true
 		if (pdftex) {
@@ -214,7 +232,7 @@ public class LaTeXTask extends Task {
 				if (exitVal != 0) {
 					throw new BuildException(
 							"Failure in generating pdf document.");
-				}				
+				}
 			} catch (IOException e) {
 				throw new BuildException("Failed to execute pdflatex: "
 						+ e.getMessage());
@@ -223,21 +241,22 @@ public class LaTeXTask extends Task {
 						+ e.getMessage());
 			}
 		}
-		
+
 		// If set, clean the working directory.
 		if (clean) {
-			// Create the file set with the target directory and files to delete.
+			// Create the file set with the target directory and files to
+			// delete.
 			FileSet fs = new FileSet();
 			fs.setDir(workDir);
-			fs.setIncludes(cleanTargets);
-			
+			fs.setIncludes(includes);
+
 			// Create a new delete task
 			Delete del = new Delete();
 			del.setProject(getProject());
 			del.setTaskName("clean");
 			del.addFileset(fs);
 			del.setVerbose(true);
-			
+
 			// Execute the clean
 			log("Excuting clean");
 			del.execute();
