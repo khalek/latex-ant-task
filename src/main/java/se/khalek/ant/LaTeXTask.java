@@ -11,7 +11,12 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 /**
- * Ant task for compiling LaTeX documents. The task uses pdfTeX as compiler.
+ * Implementation for an Ant task that compiles LaTeX documents with pdfTeX. The
+ * task contains a number of attributes, which are private fields in this class
+ * and are set in a public method "setX", where X is the name of the attribute.
+ * For example, if we have an attribute to the Ant task called verbose, we will
+ * have to create a private field called {@code verbose} and a public method
+ * {@code setVerbose()}.
  */
 public class LaTeXTask extends Task {
 	// Attributes of the task. //
@@ -122,7 +127,26 @@ public class LaTeXTask extends Task {
 	}
 
 	/**
-	 * Executes this and any nested tasks.
+	 * Determines the pdflatex of the system and adds all necessary arguments,
+	 * which are returned together as a single String.
+	 * 
+	 * @return The command to execute pdflatex and its arguments.
+	 */
+	private String commands() {
+		// Add any additional commands into this array.
+		String[] cmdArr = { "pdflatex", "-interaction=errorstopmode",
+				"-output-directory=" + workingDir };
+		// Convert to a single String.
+		String commands = "";
+		for (String c : cmdArr) {
+			commands += c + " ";
+		}
+		return commands;
+	}
+
+	/**
+	 * Executes this tasks. Relevant information gets logged during execution of
+	 * the task.
 	 * 
 	 * @throws BuildException
 	 *             if an error occurs during execution.
@@ -152,12 +176,11 @@ public class LaTeXTask extends Task {
 			log("Exec: pdflatex -interaction=errorstopmode " + source);
 			try {
 				Process p = Runtime.getRuntime().exec(
-						"/opt/texbin/pdflatex -interaction=errorstopmode " +
-						"-output-directory=" + workingDir + " " + 
-						sourceFile.getCanonicalPath());
+						commands() + sourceFile.getCanonicalPath());
 				// Log the output from pdflatex.
 				String line;
-				BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				BufferedReader output = new BufferedReader(
+						new InputStreamReader(p.getInputStream()));
 				while ((line = output.readLine()) != null) {
 					log(line);
 				}
