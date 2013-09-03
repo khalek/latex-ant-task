@@ -14,7 +14,7 @@ With Maven is is fairly simple to build the source. We only need to provide the 
 ```
 # In the root catalog
 mvn package
-````
+```
 If we would like to build without running all tests, that is also possible.
 
 ```
