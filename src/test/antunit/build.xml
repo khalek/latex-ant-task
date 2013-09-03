@@ -5,7 +5,7 @@
 	<property file="test.properties" /> 
 	
 	<taskdef name="latex" 
-		classname="se.khalek.ant.LaTeXTask"
+		classname="se.khalek.ant.LaTeX"
 		classpath="${compile.classpath}"/>
 
 	<target name="simple">
