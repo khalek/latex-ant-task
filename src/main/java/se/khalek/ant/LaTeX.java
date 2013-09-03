@@ -110,7 +110,7 @@ public class LaTeX extends AbstractTask {
 		}
 		return version;
 	}
-
+	
 	/**
 	 * Executes this tasks. Relevant information gets logged during execution of
 	 * the task.
@@ -142,8 +142,13 @@ public class LaTeX extends AbstractTask {
 			LaTeXTask execTask = new LaTeXTask(source, workingDir);
 			execTask.setProject(getProject());
 			execTask.setTaskName(getTaskName());
-			execTask.execute();
-			exitValue = execTask.getExitValue();
+			
+			// Execute pdflatex twice, if the exit value still is 0.
+			int remainingExcutes = 2;
+			while (remainingExcutes-- > 0 && exitValue == 0) {
+				execTask.execute();
+				exitValue = execTask.getExitValue();
+			}
 		}
 
 		// If set and no failures were generated, clean the working directory.
