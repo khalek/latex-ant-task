@@ -175,7 +175,28 @@ public class LaTeXTask extends Task {
 			log("Output ceased to function");
 		}
 	}
-	
+
+	/**
+	 * Performs a clean operation on a directory.
+	 */
+	private void performClean(File directory) {
+		//  Create a file set for the directory and files to delete.
+		FileSet fs = new FileSet();
+		fs.setDir(directory);
+		fs.setIncludes(includes);
+
+		// Create a new delete task
+		Delete del = new Delete();
+		del.setProject(getProject());
+		del.setTaskName("clean");
+		del.addFileset(fs);
+		del.setVerbose(true);
+
+		// Execute the clean
+		log("Excuting clean");
+		del.execute();
+	}
+
 	/**
 	 * Executes this tasks. Relevant information gets logged during execution of
 	 * the task.
@@ -211,7 +232,7 @@ public class LaTeXTask extends Task {
 				Process pdfTex = Runtime.getRuntime().exec(
 						commands() + sourceFile.getPath());
 
-				// Log the output from pdflatex.
+				// Log the outputs from pdflatex.
 				logOutput(pdfTex);
 
 				// Wait for pdfTex to finish and examine its exit value.
@@ -221,6 +242,7 @@ public class LaTeXTask extends Task {
 					throw new BuildException(
 							"Failure in generating pdf document.");
 				}
+				// Should only be thrown by Runtime.getRunTime().exec(String).
 			} catch (IOException e) {
 				throw new BuildException("Failed to execute pdflatex: "
 						+ e.getMessage());
@@ -232,22 +254,7 @@ public class LaTeXTask extends Task {
 
 		// If set and no failures were generated, clean the working directory.
 		if (clean && exitVal == 0) {
-			// Create the file set with the target directory and files to
-			// delete.
-			FileSet fs = new FileSet();
-			fs.setDir(workDir);
-			fs.setIncludes(includes);
-
-			// Create a new delete task
-			Delete del = new Delete();
-			del.setProject(getProject());
-			del.setTaskName("clean");
-			del.addFileset(fs);
-			del.setVerbose(true);
-
-			// Execute the clean
-			log("Excuting clean");
-			del.execute();
+			performClean(workDir);		
 		}
 	}
 }
