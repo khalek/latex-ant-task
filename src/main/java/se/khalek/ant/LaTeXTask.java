@@ -9,6 +9,10 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.Delete;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.ResourceCollection;
+import org.apache.tools.ant.types.resources.comparators.FileSystem;
 
 /**
  * Implementation for an Ant task that compiles LaTeX documents with pdfTeX. The
@@ -24,6 +28,9 @@ public class LaTeXTask extends Task {
 	private String workingDir = System.getProperty("user.dir");
 	private boolean clean;
 	private boolean pdftex;
+	
+	// Files that should be removed by a clean
+	private String cleanTargets = "*.log *.aux";
 
 	/**
 	 * Sets the required attribute for filename to source latex file.
@@ -88,22 +95,6 @@ public class LaTeXTask extends Task {
 	}
 
 	/**
-	 * Converts the String workingDir to a canonical version.
-	 * 
-	 * @return The canonical path to the working directory.
-	 * @throws BuildException
-	 *             If an error occurs when retrieving the path.
-	 */
-	private String canonical() throws BuildException {
-		File directory = new File(workingDir);
-		try {
-			return directory.getCanonicalPath();
-		} catch (IOException e) {
-			throw new BuildException(e.getMessage());
-		}
-	}
-
-	/**
 	 * Creates and return a file object based on two parameters. The first
 	 * parameter is the directory to the file and the second, the name of the
 	 * file.
@@ -116,14 +107,20 @@ public class LaTeXTask extends Task {
 	 * @throws BuildException
 	 *             If the file does not exist.
 	 */
-	private File convertToFile(String dir, String file) throws BuildException {
-		String canonicalPath = dir + "/" + file;
-		File f = new File(canonicalPath);
-		if (!f.exists()) {
-			throw new BuildException("File " + canonicalPath
-					+ " does not exist.");
+	private File convertToFile(String dir, String file, String type) throws BuildException {
+		return convertToFile(dir + File.separator + file, type);
+	}
+	
+	private File convertToFile(String path, String type) throws BuildException {
+		try {
+			File f = new File(path).getCanonicalFile();
+			if (!f.exists()) {
+				throw new BuildException(type + " " + path + " does not exist.");
+			}
+			return f;
+		} catch (IOException e) {
+			throw new BuildException(e.getMessage());
 		}
-		return f;
 	}
 
 	/**
@@ -155,7 +152,7 @@ public class LaTeXTask extends Task {
 		// Reader for the incoming stream from the process.
 		BufferedReader output = new BufferedReader(new InputStreamReader(
 				p.getInputStream()));
-		
+
 		String line;
 		try {
 			while ((line = output.readLine()) != null) {
@@ -180,17 +177,17 @@ public class LaTeXTask extends Task {
 			throw new BuildException("No latex source file was given.");
 		}
 
-		// Convert working directory path to canonical.
-		workingDir = canonical();
+		// Convert working directory String to a directory with canonical path.
+		File workDir = convertToFile(workingDir, "Directory");
 
 		// Convert the file name and its path to a File object.
-		File sourceFile = convertToFile(workingDir, source);
+		File sourceFile = convertToFile(workingDir, source, "File");
 
 		log("Executing LaTeX ANT Task, Version " + version());
 
 		// Log the values of all attributes.
 		log("source \t = " + source);
-		log("workingDir \t = " + workingDir);
+		log("workingDir \t = " + workDir.getPath());
 		log("clean \t = " + clean);
 		log("pdftex \t = " + pdftex);
 
@@ -211,11 +208,21 @@ public class LaTeXTask extends Task {
 					throw new BuildException(
 							"Failure in generating pdf document.");
 				}
+
+				// If set, clean the working directory.
+				if (clean) {
+					Delete del = new Delete();
+					del.setDir(workDir);
+					del.setIncludes(cleanTargets);
+					del.execute();
+				}
 			} catch (IOException e) {
 				throw new BuildException(e.getMessage());
 			} catch (InterruptedException e) {
 				throw new BuildException("Disaster occured :C - "
 						+ e.getMessage());
+			} catch (NullPointerException e) {
+				e.printStackTrace();
 			}
 		}
 	}
