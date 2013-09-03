@@ -10,13 +10,12 @@
 	<target name="setUp">
 		<au:logcapturer/>
 	</target>
-
+	
 	<target name="tearDown">
 		<delete> 
 			<fileset dir="${test.directory}/samples" excludes="*.tex"/>
 		</delete>
 	</target>
-			
 	<!-- test without source file -->
 	<target name="testExecutionNoSource">
 		<au:expectfailure message="no latex source file was given.">
@@ -69,5 +68,15 @@
 			workingdir="target/test-classes/samples"
 			pdftex="true"/>
 		<au:assertFileExists file="${test.directory}/samples/simple-article.log"/>
+	</target>
+	
+	<!-- test pdflatex with clean -->
+	<target name="testPdfTexClean">
+		<latex 
+			source="simple-article.tex" 
+			workingdir="target/test-classes/samples"
+			pdftex="true"
+			clean="true"/>
+		<au:assertFileDoesntExist file="${test.directory}/samples/simple-article.log"/>
 	</target>
 </project>

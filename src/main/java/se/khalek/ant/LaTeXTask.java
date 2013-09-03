@@ -9,6 +9,8 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.Delete;
+import org.apache.tools.ant.types.FileSet;
 
 /**
  * Implementation for an Ant task that compiles LaTeX documents with pdfTeX. The
@@ -27,7 +29,7 @@ public class LaTeXTask extends Task {
 
 	// Files that should be removed by a clean
 	private String cleanTargets = "*.log *.aux";
-
+	
 	/**
 	 * Sets the required attribute for filename to source latex file.
 	 * 
@@ -212,7 +214,7 @@ public class LaTeXTask extends Task {
 				if (exitVal != 0) {
 					throw new BuildException(
 							"Failure in generating pdf document.");
-				}
+				}				
 			} catch (IOException e) {
 				throw new BuildException("Failed to execute pdflatex: "
 						+ e.getMessage());
@@ -220,6 +222,25 @@ public class LaTeXTask extends Task {
 				throw new BuildException("Disaster occured :C - "
 						+ e.getMessage());
 			}
+		}
+		
+		// If set, clean the working directory.
+		if (clean) {
+			// Create the file set with the target directory and files to delete.
+			FileSet fs = new FileSet();
+			fs.setDir(workDir);
+			fs.setIncludes(cleanTargets);
+			
+			// Create a new delete task
+			Delete del = new Delete();
+			del.setProject(getProject());
+			del.setTaskName("clean");
+			del.addFileset(fs);
+			del.setVerbose(true);
+			
+			// Execute the clean
+			log("Excuting clean");
+			del.execute();
 		}
 	}
 }

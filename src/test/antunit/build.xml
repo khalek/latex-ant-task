@@ -9,7 +9,11 @@
 		classpath="${compile.classpath}"/>
 
 	<target name="simple">
-		<latex source="simple-article.tex" workingdir="../test-classes/samples" pdftex="true"/>
+		<latex 
+			source="simple-article.tex"
+			workingdir="../test-classes/samples"
+			pdftex="true"
+			clean="true"/>
 	</target>
 
 	<target name="error">
