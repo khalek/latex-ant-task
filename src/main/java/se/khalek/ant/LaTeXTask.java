@@ -28,11 +28,48 @@ public class LaTeXTask extends Task {
 	private String source;
 	private String workingDir;
 
+	/**
+	 * Default constructor. Sets some initial values to some of the attributes.
+	 */
 	public LaTeXTask() {
 		super();
 		workingDir = System.getProperty("user.dir");
 		clean = false;
 		includes = "*.log *.aux";
+	}
+
+	/**
+	 * Sets the value of the attribute clean.
+	 * 
+	 * @param doClean
+	 *            Assign true if files, such as .log and .aux, should be removed
+	 *            after compilation, false otherwise.
+	 */
+	public void setClean(boolean doClean) {
+		clean = doClean;
+	}
+
+	/**
+	 * Sets the value of attribute includes. Determines which files to remove by
+	 * a clean.
+	 * 
+	 * @param includes
+	 *            The pattern for which files to remove by clean as assigned in
+	 *            a build file.
+	 */
+	public void setIncludes(String includes) {
+		this.includes = includes;
+	}
+
+	/**
+	 * Sets the value of the attribute pdftex.
+	 * 
+	 * @param doPdftex
+	 *            Pass true if the task should execute pdflatex, false
+	 *            otherwise.
+	 */
+	public void setPdftex(boolean doPdftex) {
+		pdftex = doPdftex;
 	}
 
 	/**
@@ -57,63 +94,6 @@ public class LaTeXTask extends Task {
 	}
 
 	/**
-	 * Sets the value of the attribute clean.
-	 * 
-	 * @param doClean
-	 *            Assign true if files, such as .log and .aux, should be removed
-	 *            after compilation, false otherwise.
-	 */
-	public void setClean(boolean doClean) {
-		clean = doClean;
-	}
-
-	/**
-	 * Sets the value of the attribute pdftex.
-	 * 
-	 * @param doPdftex
-	 *            Pass true if the task should execute pdflatex, false
-	 *            otherwise.
-	 */
-	public void setPdftex(boolean doPdftex) {
-		pdftex = doPdftex;
-	}
-
-	/**
-	 * Retrieves the current application version from the version.properties
-	 * resource.
-	 * 
-	 * @return The version number.
-	 */
-	private String version() {
-		String version = "";
-		URL resource = getClass().getResource("/version.properties");
-		Properties props = new Properties();
-		try {
-			props.load(resource.openStream());
-			version = props.getProperty("version");
-		} catch (IOException e) {
-			version = "undetermined";
-		}
-		return version;
-	}
-
-	/**
-	 * Creates and return a File object based on the path to the directory and
-	 * the filename to a specific file.
-	 * 
-	 * @param dir
-	 *            The directory path to the file.
-	 * @param file
-	 *            The filename
-	 * @return A File object that represents an existing file.
-	 * @throws BuildException
-	 *             If the file does not exist for the given path.
-	 */
-	private File convertToFile(String dir, String file) throws BuildException {
-		return convertToFile(dir + File.separator + file);
-	}
-
-	/**
 	 * Creates and return a File object based on the path to the file or
 	 * directory.
 	 * 
@@ -133,6 +113,22 @@ public class LaTeXTask extends Task {
 		} catch (IOException e) {
 			throw new BuildException(e.getMessage());
 		}
+	}
+
+	/**
+	 * Creates and return a File object based on the path to the directory and
+	 * the filename to a specific file.
+	 * 
+	 * @param dir
+	 *            The directory path to the file.
+	 * @param file
+	 *            The filename
+	 * @return A File object that represents an existing file.
+	 * @throws BuildException
+	 *             If the file does not exist for the given path.
+	 */
+	private File convertToFile(String dir, String file) throws BuildException {
+		return convertToFile(dir + File.separator + file);
 	}
 
 	/**
@@ -177,10 +173,14 @@ public class LaTeXTask extends Task {
 	}
 
 	/**
-	 * Performs a clean operation on a directory.
+	 * Removes files from a directory according to the pattern designated in the
+	 * includes attribute.
+	 * 
+	 * @param directory
+	 *            The directory that the clean should target.
 	 */
 	private void performClean(File directory) {
-		//  Create a file set for the directory and files to delete.
+		// Create a file set for the directory and files to delete.
 		FileSet fs = new FileSet();
 		fs.setDir(directory);
 		fs.setIncludes(includes);
@@ -195,6 +195,25 @@ public class LaTeXTask extends Task {
 		// Execute the clean
 		log("Excuting clean");
 		del.execute();
+	}
+
+	/**
+	 * Retrieves the current application version from the version.properties
+	 * resource.
+	 * 
+	 * @return The version number.
+	 */
+	private String version() {
+		String version = "";
+		URL resource = getClass().getResource("/version.properties");
+		Properties props = new Properties();
+		try {
+			props.load(resource.openStream());
+			version = props.getProperty("version");
+		} catch (IOException e) {
+			version = "undetermined";
+		}
+		return version;
 	}
 
 	/**
@@ -254,7 +273,7 @@ public class LaTeXTask extends Task {
 
 		// If set and no failures were generated, clean the working directory.
 		if (clean && exitVal == 0) {
-			performClean(workDir);		
+			performClean(workDir);
 		}
 	}
 }
