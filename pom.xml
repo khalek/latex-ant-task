@@ -8,11 +8,11 @@
   <packaging>jar</packaging>
   <name>Latex ant task</name>
   <description>Simple LaTeX ANT Task</description>
-  <url>https://bitbucket.org/khalek/latex-ant-task</url>
+  <url>https://github.com/khalek/latex-ant-task</url>
 
   <issueManagement>
-	<url>https://bitbucket.org/khalek/latex-ant-task/issues</url>
-	<system>Bitbucket Issues</system>
+	<url>https://github.com/khalek/latex-ant-task/issues</url>
+	<system>GitHub Issues</system>
   </issueManagement>
 
   <licenses>
@@ -24,8 +24,8 @@
   </licenses>
 
   <scm>
-	<url>https://bitbucket.org/khalek/latex-ant-task</url>
-	<connection>scm:git:git://bitbucket.org/khalek/latex-ant-task.git</connection>
+	<url>https://github.com/khalek/latex-ant-task</url>
+	<connection>scm:git:git://github.com/khalek/latex-ant-task.git</connection>
   </scm>
 
   <developers>
