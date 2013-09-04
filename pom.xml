@@ -57,7 +57,7 @@
 						<goal>run</goal>
 					</goals>
 					<configuration>
-						<tasks>
+						<tasks unless="maven.skip.test">
 							<ant antfile="${project.build.testOutputDirectory}/tests.xml"
 								 inheritAll="false" inheritRefs="false">
 							<property name="test.classpath" refid="maven.test.classpath" />

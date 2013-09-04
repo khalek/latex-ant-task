@@ -12,9 +12,16 @@ Features:
 With Maven it is fairly simple to build the source. We only need to provide one argument.
 
 ```
-# In the root catalog
+# In the project root catalog
 mvn package
 ```
+
+We can choose to skip the tests when building the source by providing an option:
+
+```
+mvn package -Dmaven.skip.test=true
+```
+
 Once the build is complete, we can find the jar in `target/latexant-0.1.jar`. It is recommended to install it, copy the jar, to the library `libs` catalog in Ant's home directory `$ANT_HOME/libs` . In this way, we don't have to specify the `classpath`.
 
 ## Usage
