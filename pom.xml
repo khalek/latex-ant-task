@@ -39,7 +39,7 @@
   </properties>
 
   <build>
-	<finalName>latexant-${project.version}</finalName>
+	<finalName>latex-ant-v${project.version}</finalName>
 	<testSourceDirectory>src/test</testSourceDirectory>
 	<testResources>
 		<testResource>
